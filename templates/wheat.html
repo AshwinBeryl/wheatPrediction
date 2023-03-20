@@ -1,0 +1,24 @@
+<html>
+<body>
+    <div class="login">
+       <h1>Wheat Class Prediction</h1>
+   
+       <form action="{{ url_for('predict_datapoint')}}" method="post">
+        <div>
+            <input type="text" name="area" placeholder="area"><br>
+            <input type="text" name="perimeter" placeholder="perimeter"><br>
+            <input type="text" name="compactness" placeholder="compactness"><br>
+            <input type="text" name="lengthOfKernel" placeholder="lengthOfKernel"><br>
+            <input type="text" name="widthOfKernel" placeholder="widthOfKernel"><br>
+            <input type="text" name="asymmetryCoefficent" placeholder="asymmetryCoefficent"><br>
+            <input type="text" name="lengthOfKernelGroove" placeholder="lengthOfKernelGroove"><br>
+        </div>
+        <div class="mb-3">
+            <input class="btn btn-primary" type="submit" value="Predict wheat class" required />
+        </div>
+    </form>
+    <h2>
+       The predicted class is {{results}}
+    </h2>
+   <body>
+</html>

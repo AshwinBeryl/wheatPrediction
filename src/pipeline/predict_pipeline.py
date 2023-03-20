@@ -2,6 +2,7 @@ import sys
 import pandas as pd
 from src.exception import CustomException
 from src.utils import load_object
+import os
 
 
 class PredictPipeline:
@@ -10,8 +11,8 @@ class PredictPipeline:
 
     def predict(self,features):
         try:
-            model_path='artifacts\model.pkl'
-            preprocessor_path='artifacts\preprocessor.pkl'
+            model_path=os.path.join('artifacts',"model.pkl")#'artifacts\model.pkl'
+            preprocessor_path=os.path.join('artifacts',"preprocessor.pkl")
             model=load_object(file_path=model_path)
             preprocessor=load_object(file_path=preprocessor_path)
             data_scaled=preprocessor.transform(features)
@@ -24,39 +25,34 @@ class PredictPipeline:
 
 
 class CustomData:
-    def __init__(  self,
-        gender: str,
-        race_ethnicity: str,
-        parental_level_of_education,
-        lunch: str,
-        test_preparation_course: str,
-        reading_score: int,
-        writing_score: int):
+    def __init__(self,
+                area,
+                perimeter,
+                compactness,
+                lengthOfKernel,
+                widthOfKernel,
+                asymmetryCoefficent,
+                lengthOfKernelGroove
+                ):
 
-        self.gender = gender
-
-        self.race_ethnicity = race_ethnicity
-
-        self.parental_level_of_education = parental_level_of_education
-
-        self.lunch = lunch
-
-        self.test_preparation_course = test_preparation_course
-
-        self.reading_score = reading_score
-
-        self.writing_score = writing_score
+        self.area=area
+        self.perimeter=perimeter
+        self.compactness=compactness
+        self.lengthOfKernel=lengthOfKernel
+        self.widthOfKernel=widthOfKernel
+        self.asymmetryCoefficent=asymmetryCoefficent
+        self.lengthOfKernelGroove=lengthOfKernelGroove
 
     def get_data_as_data_frame(self):
         try:
             custom_data_input_dict = {
-                "gender": [self.gender],
-                "race_ethnicity": [self.race_ethnicity],
-                "parental_level_of_education": [self.parental_level_of_education],
-                "lunch": [self.lunch],
-                "test_preparation_course": [self.test_preparation_course],
-                "reading_score": [self.reading_score],
-                "writing_score": [self.writing_score],
+                "area":[self.area],
+                "perimeter":[self.perimeter],
+                "compactness":[self.compactness],
+                "lengthOfKernel":[self.lengthOfKernel],
+                "widthOfKernel":[self.widthOfKernel],
+                "asymmetryCoefficent":[self.asymmetryCoefficent],
+                "lengthOfKernelGroove":[self.lengthOfKernelGroove]
             }
 
             return pd.DataFrame(custom_data_input_dict)

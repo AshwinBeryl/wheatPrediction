@@ -1,5 +1,8 @@
 import sys
 from dataclasses import dataclass
+from pathlib import Path
+path_root = Path(__file__).parents[2]
+sys.path.append(str(path_root))
 
 import numpy as np 
 import pandas as pd
@@ -16,7 +19,7 @@ from src.utils import save_object
 
 @dataclass
 class DataTransformationConfig:
-    preprocessor_obj_file_path=os.path.join('artifacts',"proprocessor.pkl")
+    preprocessor_obj_file_path=os.path.join('artifacts',"preprocessor.pkl")
 
 class DataTransformation:
     def __init__(self):
@@ -24,22 +27,22 @@ class DataTransformation:
 
     def get_data_transformer_object(self):
         '''
-        This function si responsible for data trnasformation
+        This function is responsible for data transformation
         
         '''
         try:
-            numerical_columns = ["writing_score", "reading_score"]
+            numerical_columns = ["area","perimeter","compactness","lengthOfKernel","widthOfKernel","asymmetryCoefficent","lengthOfKernelGroove"]
             categorical_columns = [
-                "gender",
-                "race_ethnicity",
-                "parental_level_of_education",
-                "lunch",
-                "test_preparation_course",
+                # "gender",
+                # "race_ethnicity",
+                # "parental_level_of_education",
+                # "lunch",
+                # "test_preparation_course",
             ]
 
             num_pipeline= Pipeline(
                 steps=[
-                ("imputer",SimpleImputer(strategy="median")),
+                ("imputer",SimpleImputer(strategy="mean")),
                 ("scaler",StandardScaler())
 
                 ]
@@ -85,8 +88,8 @@ class DataTransformation:
 
             preprocessing_obj=self.get_data_transformer_object()
 
-            target_column_name="math_score"
-            numerical_columns = ["writing_score", "reading_score"]
+            target_column_name="class"
+            numerical_columns = ["area","perimeter","compactness","lengthOfKernel","widthOfKernel","asymmetryCoefficent","lengthOfKernelGroove"]
 
             input_feature_train_df=train_df.drop(columns=[target_column_name],axis=1)
             target_feature_train_df=train_df[target_column_name]

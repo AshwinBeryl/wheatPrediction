@@ -37,13 +37,13 @@ def evaluate_models(X_train, y_train,X_test,y_test,models,param):
 
             #model.fit(X_train, y_train)  # Train model
 
-            y_train_pred = model.predict(X_train)
+            train_model_score = model.score(X_train, y_train)
 
-            y_test_pred = model.predict(X_test)
+            test_model_score = model.score(X_test, y_test)
 
-            train_model_score = r2_score(y_train, y_train_pred)
+            # train_model_score = r2_score(y_train, y_train_pred)
 
-            test_model_score = r2_score(y_test, y_test_pred)
+            # test_model_score = r2_score(y_test, y_test_pred)
 
             report[list(models.keys())[i]] = test_model_score
 

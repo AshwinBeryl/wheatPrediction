@@ -1,12 +1,18 @@
 import os
 import sys
 from dataclasses import dataclass
+from pathlib import Path
+path_root = Path(__file__).parents[2]
+sys.path.append(str(path_root))
+
+from sklearn.tree import DecisionTreeClassifier
 
 from catboost import CatBoostRegressor
 from sklearn.ensemble import (
     AdaBoostRegressor,
     GradientBoostingRegressor,
     RandomForestRegressor,
+    RandomForestClassifier
 )
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
@@ -29,8 +35,9 @@ class ModelTrainer:
 
 
     def initiate_model_trainer(self,train_array,test_array):
+        logging.info("Initiating model training")
         try:
-            logging.info("Split training and test input data")
+            logging.info("Split the training and test input data for the model")
             X_train,y_train,X_test,y_test=(
                 train_array[:,:-1],
                 train_array[:,-1],
@@ -38,25 +45,27 @@ class ModelTrainer:
                 test_array[:,-1]
             )
             models = {
-                "Random Forest": RandomForestRegressor(),
-                "Decision Tree": DecisionTreeRegressor(),
-                "Gradient Boosting": GradientBoostingRegressor(),
-                "Linear Regression": LinearRegression(),
-                "XGBRegressor": XGBRegressor(),
-                "CatBoosting Regressor": CatBoostRegressor(verbose=False),
-                "AdaBoost Regressor": AdaBoostRegressor(),
+                "Random Forest": RandomForestClassifier(),
+                "Decision Tree": DecisionTreeClassifier(),
+                # "Gradient Boosting": GradientBoostingRegressor(),
+                # "Linear Regression": LinearRegression(),
+                # "XGBRegressor": XGBRegressor(),
+                # "CatBoosting Regressor": CatBoostRegressor(verbose=False),
+                # "AdaBoost Regressor": AdaBoostRegressor(),
             }
             params={
                 "Decision Tree": {
-                    'criterion':['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
-                    # 'splitter':['best','random'],
-                    # 'max_features':['sqrt','log2'],
+                    'criterion' : ['gini', 'entropy'],
+                    'max_depth' : [5, 10,15, 20, 12, 15, 24, 30, 35, 40, None]
+ 
                 },
                 "Random Forest":{
-                    # 'criterion':['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
-                 
-                    # 'max_features':['sqrt','log2',None],
-                    'n_estimators': [8,16,32,64,128,256]
+                    'bootstrap': [True, False],
+                    'max_depth': [5, 10,15, 20, 12, 15, 24, 30, 35, 40, None],
+                    'max_features': ['auto', 'sqrt'],
+                    'min_samples_leaf': [1, 2, 4],
+                    'min_samples_split': [2, 5, 10],
+                    'n_estimators': [10, 20, 30,40, 50]
                 },
                 "Gradient Boosting":{
                     # 'loss':['squared_error', 'huber', 'absolute_error', 'quantile'],
@@ -84,6 +93,7 @@ class ModelTrainer:
                 
             }
 
+            logging.info(f"Model evaluation initiated")
             model_report:dict=evaluate_models(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,
                                              models=models,param=params)
             
@@ -97,9 +107,9 @@ class ModelTrainer:
             ]
             best_model = models[best_model_name]
 
-            if best_model_score<0.6:
-                raise CustomException("No best model found")
-            logging.info(f"Best found model on both training and testing dataset")
+            # if best_model_score<0.6:
+                # raise CustomException("No best model found", sys)
+            logging.info(f"Best found model is {best_model_name} on both training and testing dataset")
 
             save_object(
                 file_path=self.model_trainer_config.trained_model_file_path,
